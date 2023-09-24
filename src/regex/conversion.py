@@ -1,5 +1,5 @@
-from src.regex.tree import SyntaxTree
-from src.automata.structures.fa import FiniteAutomata, State
+from src.regex.syntax_tree import SyntaxTree
+from src.automata.fa import FiniteAutomata, State
 
 
 def fa_from(regex) -> FiniteAutomata:
