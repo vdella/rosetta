@@ -1,4 +1,4 @@
-from src.automata.structures.state import State
+from src.automata.state import State
 from prettytable import PrettyTable
 
 
