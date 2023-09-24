@@ -1,5 +1,4 @@
-import plotly.graph_objects as go
-from igraph import Graph, Layout, EdgeSeq
+from igraph import Graph
 from src.regex.syntax_tree import eat, SyntaxTree, stringfy
 
 
@@ -146,68 +145,3 @@ class DashTree:
 
         seek_from(self.syntax_tree.root)
         return annotations
-
-
-if __name__ == '__main__':
-
-    tree = DashTree('(ab)*ab')
-
-    graphed_tree = tree.to_graph()
-
-    lay: Layout = graphed_tree.layout_reingold_tilford(root=[str(0)])
-
-    _, nr_vertices = tree.vertices()
-
-    position = {k: lay[k] for k in range(nr_vertices)}
-    Y = [lay[k][1] for k in range(nr_vertices)]
-    M = max(Y)
-
-    es = EdgeSeq(graphed_tree)
-    E = [e.tuple for e in graphed_tree.es]
-
-    L = len(position)
-    Xn = [position[k][0] for k in range(L)]
-    Yn = [2 * M - position[k][1] for k in range(L)]
-    Xe = []
-    Ye = []
-    
-    for edge in E:
-        Xe += [position[edge[0]][0], position[edge[1]][0], None]
-        Ye += [2 * M - position[edge[0]][1], 2 * M - position[edge[1]][1], None]
-
-    fig = go.Figure()
-
-    fig.add_trace(go.Scatter(x=Xe,
-                             y=Ye,
-                             mode='lines',
-                             line=dict(color='rgb(210,210,210)', width=1),
-                             hoverinfo='none'
-                             ))
-
-    fig.add_trace(go.Scatter(x=Xn,
-                             y=Yn,
-                             mode='markers',
-                             name='bla',
-                             marker=dict(symbol='circle-dot',
-                                         size=18,
-                                         color='#6175c1',  # '#DB4551',
-                                         line=dict(color='rgb(50,50,50)', width=1)
-                                         ),
-                             customdata=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-                             hovertemplate="%{customdata}<extra></extra>",
-                             hoverinfo='text',
-                             opacity=0.8
-                             ))
-
-    fig.update_layout(title_text='Lexical analysis tree',
-                      title_x=0.5,
-                      font_size=12,
-                      showlegend=False,
-                      xaxis_visible=False,
-                      yaxis_visible=False,
-                      margin=dict(l=40, r=40, b=85, t=100),
-                      hovermode='closest',
-                      plot_bgcolor='rgb(248,248,248)'
-                      )
-
-    fig.show()
