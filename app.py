@@ -1,4 +1,4 @@
-from dash import Dash, html, dcc, Input, Output, callback, State
+from dash import Dash, html, dcc, Input, Output, callback
 from src.components.dash_tree.figure import figure_from
 import dash_bootstrap_components as dbc
 
@@ -12,40 +12,50 @@ app.layout = html.Div(
         html.Br(),
         html.Br(),
 
-        dcc.Input(
-            id='regex-input',
-            placeholder='Type your favorite regex!',
-            debounce=True),
-
-        html.Br(),
-
-        dbc.Button('Submit', id='submit-button', style={'textAlign': 'center'}),
-
         html.Div(
-            id='output-container-button',
-            children='Enter a value and press submit'),
+            children=[
+                dcc.Input(
+                    id='regex-input',
+                    placeholder='Type your favorite regex!',
+                    debounce=True),
+            ],
+            style={'textAlign': 'center'},
+        ),
 
-        html.Br(),
         html.Br(),
 
         html.Div(
-            id="output",
-            style={"verticalAlign": "middle"}),
+            children=[
+                dbc.Button('Submit', id='submit-button'),
+            ],
+            style={'textAlign': 'center'}),
 
-        dcc.Graph(
-            id='bin-tree',
-            figure={},
+        html.Br(),
+        html.Br(),
+
+        html.Div(
+            id='figure-parent',
+            children=[
+                dcc.Graph(
+                    id='bin-tree',
+                    figure={},
+                ),
+            ],
+            hidden=True,
         )
     ]))
 
 
 @callback(
+    Output('figure-parent', 'hidden'),
     Output('bin-tree', 'figure'),
     Input('regex-input', 'value'))
-def update_output(value):
+def update_figure_from(value):
+    hidden = True
+
     if value:
-        return figure_from(value)
-    return {}
+        return not hidden, figure_from(value)
+    return hidden, {}
 
 
 if __name__ == '__main__':
