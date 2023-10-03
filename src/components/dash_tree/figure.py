@@ -75,8 +75,8 @@ def __node_trace_for(figure, Xn, Yn):
                                 ))
 
 
-def figure():
-    tree = DashTree('(ab)*ab')
+def figure_from(regex):
+    tree = DashTree(regex)
 
     fig = go.Figure()
 
@@ -101,5 +101,5 @@ def figure():
 
 
 if __name__ == '__main__':
-    f = figure()
+    f = figure_from('(ab)*ab')
     f.show()
