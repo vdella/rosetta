@@ -1,6 +1,55 @@
 import plotly.graph_objects as go
 from igraph import Layout, Graph
 from src.components.dash_tree.tree import DashTree
+from src.regex.syntax_tree import stringfy
+
+
+def figure_from(regex):
+    tree = DashTree(regex)
+
+    fig = go.Figure()
+
+    Xn, Yn = __build_node_coordinates_for(tree)
+    Xe, Ye = __build_edge_coordinates_for(tree)
+
+    __edge_trace_for(fig, Xe, Ye)
+
+    node_annotations = annotations_for(tree)
+    __node_trace_for(fig, Xn, Yn, node_annotations)
+
+    fig.update_layout(title_text='Lexical analysis tree',
+                      title_x=0.5,
+                      font_size=12,
+                      showlegend=False,
+                      xaxis_visible=False,
+                      yaxis_visible=False,
+                      margin=dict(l=40, r=40, b=85, t=100),
+                      hovermode='closest',
+                      plot_bgcolor='rgb(255,255,255)'
+                      )
+    return fig
+
+
+def annotations_for(tree: DashTree) -> list:
+    annotations = list()
+
+    def seek_from(node):
+        nonlocal annotations
+
+        if node:
+            nullable = node.nullable()
+            first_pos, last_pos = stringfy(node)
+
+            node_metadata = (node.regex_symbol, ('Nullable? {}\n'
+                                                 'first pos: {}\n '
+                                                 'last_pos: {}').format(nullable, first_pos, last_pos))
+            annotations.append(node_metadata)
+
+            seek_from(node.left)
+            seek_from(node.right)
+
+    seek_from(tree.syntax_tree.root)
+    return annotations
 
 
 def __build_node_coordinates_for(tree: DashTree):
@@ -58,48 +107,26 @@ def __edge_trace_for(figure, Xe, Ye):
                                 ))
 
 
-def __node_trace_for(figure, Xn, Yn):
+def __node_trace_for(figure, Xn, Yn, node_annotations: list):
+    regex_symbols = list()
+    nodes_metadata = list()
+
+    for node in node_annotations:
+        regex_symbols.append(node[0])
+        nodes_metadata.append(node[1])
+
     figure.add_trace(go.Scatter(x=Xn,
                                 y=Yn,
-                                mode='markers',
+                                mode='markers+text',
                                 name='bla',
-                                marker=dict(symbol='circle-dot',
-                                            size=18,
-                                            color='#6175c1',  # '#DB4551',
-                                            line=dict(color='rgb(50,50,50)', width=1)
-                                            ),
-                                customdata=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+                                marker=dict(size=18,),
+                                text=regex_symbols,
+                                customdata=nodes_metadata,
                                 hovertemplate="%{customdata}<extra></extra>",
                                 hoverinfo='text',
-                                opacity=0.8
+                                opacity=1.0
                                 ))
 
 
-def figure_from(regex):
-    tree = DashTree(regex)
-
-    fig = go.Figure()
-
-    Xn, Yn = __build_node_coordinates_for(tree)
-    Xe, Ye = __build_edge_coordinates_for(tree)
-
-    __edge_trace_for(fig, Xe, Ye)
-
-    __node_trace_for(fig, Xn, Yn)
-
-    fig.update_layout(title_text='Lexical analysis tree',
-                      title_x=0.5,
-                      font_size=12,
-                      showlegend=False,
-                      xaxis_visible=False,
-                      yaxis_visible=False,
-                      margin=dict(l=40, r=40, b=85, t=100),
-                      hovermode='closest',
-                      plot_bgcolor='rgb(248,248,248)'
-                      )
-    return fig
-
-
 if __name__ == '__main__':
-    f = figure_from('(ab)*ab')
-    f.show()
+    print(annotations_for(DashTree('(a|b)#')))
