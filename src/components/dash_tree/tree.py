@@ -15,8 +15,6 @@ class DashTree:
         vertices = set()
 
         root = 0
-        vertices |= {str(root)}
-        graph.add_vertex(str(root))
 
         def build_graph_from(node):
             nonlocal graph, nodes, vertices
@@ -40,7 +38,7 @@ class DashTree:
         build_graph_from(root)
 
         to_delete_ids = [v.index for v in graph.vs if v.degree() == 0]  # Gathers all vertices without edges and...
-        graph.delete_vertices(to_delete_ids)  # Remove them from the graph.
+        graph.delete_vertices(to_delete_ids)  # Removes them from the graph.
 
         return graph
 
@@ -126,22 +124,6 @@ class DashTree:
 
         return nodes, len(nodes)
 
-    def node_annotations(self) -> dict:
-        annotations = dict()
 
-        def seek_from(node):
-            nonlocal annotations
-
-            if node:
-                nullable = node.nullable()
-                first_pos, last_pos = stringfy(node)
-
-                annotations[node] = ('Nullable? {}/n'
-                                     'first pos: {}/n '
-                                     'last_pos: {}').format(nullable, first_pos, last_pos)
-
-                seek_from(node.left)
-                seek_from(node.right)
-
-        seek_from(self.syntax_tree.root)
-        return annotations
+if __name__ == '__main__':
+    print(DashTree('(a|b)#').vertices())
