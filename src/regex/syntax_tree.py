@@ -34,6 +34,7 @@ def _add_serials_to(tree: SyntaxTree):
                 serial += 1
 
     seek_from(tree.root)
+    tree.root.serial_number = serial
 
 
 def _tree_from(regex):
