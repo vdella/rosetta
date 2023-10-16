@@ -53,7 +53,7 @@ app.layout = html.Div(
                     dbc.Button('Last', id='last-tree-button')
                 ])
             ],
-            style={'textAlign': 'center', 'margin-left': '10px'},
+            style={'textAlign': 'center'},
             hidden=True
         ),
     ]))
