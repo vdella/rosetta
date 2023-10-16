@@ -42,20 +42,34 @@ app.layout = html.Div(
                 ),
             ],
             hidden=True,
-        )
+        ),
+
+        html.Div(
+            id='tree-page-handlers',
+            children=[
+                dbc.ButtonGroup([
+                    dbc.Button('Previous', id='prev-button'),
+                    dbc.Button('Next', id='next-button'),
+                    dbc.Button('Last', id='last-tree-button')
+                ])
+            ],
+            style={'textAlign': 'center', 'margin-left': '10px'},
+            hidden=True
+        ),
     ]))
 
 
 @callback(
     Output('figure-parent', 'hidden'),
+    Output('tree-page-handlers', 'hidden'),
     Output('bin-tree', 'figure'),
     Input('regex-input', 'value'))
 def update_figure_from(value):
-    hidden = True
+    hidden_figure, hidden_page_handler = True, True
 
     if value:
-        return not hidden, figure_from(value)
-    return hidden, {}
+        return not hidden_figure, not hidden_page_handler, figure_from(value)
+    return hidden_figure, hidden_page_handler, {}
 
 
 if __name__ == '__main__':
