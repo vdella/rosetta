@@ -1,5 +1,5 @@
 from dash import Dash, html, dcc, Input, Output, callback
-from src.components.dash_tree.figure import figure_from
+from src.components.dash_page_progression.figure import figure_from
 import dash_bootstrap_components as dbc
 
 external_stylesheets = [dbc.themes.JOURNAL]

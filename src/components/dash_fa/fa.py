@@ -1,0 +1,2 @@
+class DashFiniteAutomata:
+    pass

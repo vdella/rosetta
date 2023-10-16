@@ -1,6 +1,6 @@
 import plotly.graph_objects as go
 from igraph import Layout, Graph
-from src.components.dash_tree.tree import DashTree
+from src.components.dash_page_progression.tree import DashTree
 from src.regex.syntax_tree import stringfy
 
 
