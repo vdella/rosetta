@@ -7,6 +7,8 @@ app = Dash(__name__, external_stylesheets=external_stylesheets)
 
 app.layout = html.Div(
     html.Div([
+        html.Br(),
+
         html.H1(children='Rosetta', style={'textAlign': 'center'}),
 
         html.Br(),
@@ -56,6 +58,8 @@ app.layout = html.Div(
             style={'textAlign': 'center'},
             hidden=True
         ),
+
+        html.Br(),
     ]))
 
 
