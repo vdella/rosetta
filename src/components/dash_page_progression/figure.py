@@ -40,8 +40,8 @@ def annotations_for(tree: DashTree) -> list:
             nullable = node.nullable()
             first_pos, last_pos = stringfy(node)
 
-            node_metadata = (node.regex_symbol, ('Nullable? {}\n'
-                                                 'first pos: {}\n '
+            node_metadata = (node.regex_symbol, ('Nullable? {}<br />'
+                                                 'first pos: {}<br />'
                                                  'last_pos: {}').format(nullable, first_pos, last_pos))
             annotations.append(node_metadata)
 
