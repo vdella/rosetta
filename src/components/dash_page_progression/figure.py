@@ -54,7 +54,7 @@ def annotations_for(tree: DashTree) -> list:
 
 def __build_node_coordinates_for(tree: DashTree):
     graphed_tree: Graph = tree.to_graph()
-    _, nr_vertices = tree.vertices()
+    nr_vertices = len(tree.vertices())
 
     lay: Layout = graphed_tree.layout_reingold_tilford(root=[str(0)])
 
@@ -71,7 +71,7 @@ def __build_node_coordinates_for(tree: DashTree):
 
 def __build_edge_coordinates_for(tree: DashTree):
     graphed_tree: Graph = tree.to_graph()
-    _, nr_vertices = tree.vertices()
+    nr_vertices = len(tree.vertices())
 
     lay: Layout = graphed_tree.layout_reingold_tilford(root=[str(0)])
 

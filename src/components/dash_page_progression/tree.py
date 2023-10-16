@@ -114,15 +114,14 @@ class DashTree:
 
         return linked_nodes
 
-    def vertices(self) -> list and int:
-        """From a regex, finds the node count by finding missing concatenations and the hashtag."""
+    def vertices(self) -> list:
         nodes, _ = eat(self.regex)
 
         # Parenthesis should not be counted as tree nodes.
         parenthesis = {'(', ')'}
         nodes = [e for e in nodes if e not in parenthesis]
 
-        return nodes, len(nodes)
+        return nodes
 
 
 if __name__ == '__main__':
