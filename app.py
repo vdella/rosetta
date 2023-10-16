@@ -1,6 +1,10 @@
 from dash import Dash, html, dcc, Input, Output, callback
-from src.components.dash_page_progression.figure import figure_from
+from src.components.dash_page_progression.page import DashPage
 import dash_bootstrap_components as dbc
+
+
+page = DashPage.empty_dash_page()
+
 
 external_stylesheets = [dbc.themes.JOURNAL]
 app = Dash(__name__, external_stylesheets=external_stylesheets)
@@ -47,13 +51,14 @@ app.layout = html.Div(
         ),
 
         html.Div(
-            id='tree-page-handlers',
+            id='tree-page-handler',
             children=[
-                dbc.ButtonGroup([
-                    dbc.Button('Previous', id='prev-button'),
-                    dbc.Button('Next', id='next-button'),
-                    dbc.Button('Last', id='last-tree-button')
-                ])
+                dbc.Pagination(
+                    id='pagination',
+                    max_value=0,
+                    first_last=True,
+                    previous_next=True,
+                    fully_expanded=False),
             ],
             style={'textAlign': 'center'},
             hidden=True
@@ -65,15 +70,23 @@ app.layout = html.Div(
 
 @callback(
     Output('figure-parent', 'hidden'),
-    Output('tree-page-handlers', 'hidden'),
+    Output('tree-page-handler', 'hidden'),
+    Output('pagination', 'max_value'),
     Output('bin-tree', 'figure'),
     Input('regex-input', 'value'))
-def update_figure_from(value):
+def create_figure_from(user_text_entry):
     hidden_figure, hidden_page_handler = True, True
 
-    if value:
-        return not hidden_figure, not hidden_page_handler, figure_from(value)
-    return hidden_figure, hidden_page_handler, {}
+    if user_text_entry:
+        global page
+        page = DashPage(user_text_entry)
+
+        return not hidden_figure, not hidden_page_handler, page.page_quantity(), page.final_figure
+    return hidden_figure, hidden_page_handler, 0, {}
+
+
+def update_figure_from(button_clicked):
+    pass
 
 
 if __name__ == '__main__':
