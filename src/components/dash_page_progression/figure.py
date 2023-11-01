@@ -15,7 +15,8 @@ def figure_from(regex):
     __edge_trace_for(fig, Xe, Ye)
 
     node_annotations = annotations_for(tree)
-    __node_trace_for(fig, Xn, Yn, node_annotations)
+    mapped_nodes, _ = map_tree_nodes(tree)
+    __node_trace_for(fig, Xn, Yn, node_annotations, mapped_nodes)
 
     fig.update_layout(title_text='Lexical analysis tree',
                       title_x=0.5,
@@ -30,6 +31,19 @@ def figure_from(regex):
     return fig
 
 
+def map_tree_nodes(tree: DashTree):
+    reverse_nodes = tree.reverse_level_order_traversal()
+    creation_order_nodes = tree.retrieve_serials_by_creation_order()
+
+    combined = list()
+
+    for node in creation_order_nodes.keys():
+        reverse, created = reverse_nodes.get(node), creation_order_nodes.get(node)
+        combined.append((node, created, reverse))
+
+    return combined
+
+
 def annotations_for(tree: DashTree) -> list:
     annotations = list()
 
@@ -40,9 +54,9 @@ def annotations_for(tree: DashTree) -> list:
             nullable = node.nullable()
             first_pos, last_pos = stringfy(node)
 
-            node_metadata = (node.regex_symbol, ('Nullable? {}<br />'
-                                                 'first pos: {}<br />'
-                                                 'last_pos: {}').format(nullable, first_pos, last_pos))
+            node_metadata = (node, node.regex_symbol, ('Nullable? {}<br />'
+                                                       'first pos: {}<br />'
+                                                       'last_pos: {}').format(nullable, first_pos, last_pos))
             annotations.append(node_metadata)
 
             seek_from(node.left)
@@ -107,19 +121,22 @@ def __edge_trace_for(figure, Xe, Ye):
                                 ))
 
 
-def __node_trace_for(figure, Xn, Yn, node_annotations: list):
+def __node_trace_for(figure, Xn, Yn, node_annotations: list, mapped_nodes: dict):
     regex_symbols = list()
     nodes_metadata = list()
 
-    for node in node_annotations:
-        regex_symbols.append(node[0])
-        nodes_metadata.append(node[1])
+    for index, node in enumerate(node_annotations):
+        _, _, reverse_node_id = mapped_nodes[index]
+
+        _, regex_symbol, metadata = node
+
+        regex_symbols.append(str(reverse_node_id) + ': ' + regex_symbol)
+        nodes_metadata.append(metadata)
 
     figure.add_trace(go.Scatter(x=Xn,
                                 y=Yn,
                                 mode='markers+text',
-                                name='bla',
-                                marker=dict(size=18,),
+                                marker=dict(size=18, opacity=0.4,),
                                 text=regex_symbols,
                                 customdata=nodes_metadata,
                                 hovertemplate="%{customdata}<extra></extra>",
@@ -129,4 +146,14 @@ def __node_trace_for(figure, Xn, Yn, node_annotations: list):
 
 
 if __name__ == '__main__':
-    print(annotations_for(DashTree('(a|b)#')))
+    btree = DashTree('a*#')
+
+    print(map_tree_nodes(btree))
+
+    for n, c, r in map_tree_nodes(btree):
+        print(n, c, r)
+
+    print()
+
+    for key, value in btree.reverse_level_order_traversal().items():
+        print(key, value)

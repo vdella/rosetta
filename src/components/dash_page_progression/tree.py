@@ -1,5 +1,5 @@
 from igraph import Graph
-from src.regex.syntax_tree import eat, SyntaxTree, stringfy
+from src.regex.syntax_tree import eat, SyntaxTree
 
 
 class DashTree:
@@ -41,6 +41,57 @@ class DashTree:
         graph.delete_vertices(to_delete_ids)  # Removes them from the graph.
 
         return graph
+
+    def retrieve_serials_by_creation_order(self):
+        nodes_by_ids = dict()
+
+        root = self.syntax_tree.root
+        serial = 0
+
+        def gather_from(node):
+            nonlocal nodes_by_ids, serial
+
+            if node not in nodes_by_ids:
+                nodes_by_ids[node] = serial
+                serial += 1
+
+            left, right = node.left, node.right
+
+            if left:
+                gather_from(left)
+            if right:
+                gather_from(right)
+
+        gather_from(root)
+
+        return nodes_by_ids
+
+    def reverse_level_order_traversal(self):
+        if not self.syntax_tree.root:
+            return []
+
+        syntax_tree = self.syntax_tree
+
+        serial = len(self.vertices())
+        queue = [(syntax_tree.root, serial)]
+        stack = []
+        traversal = []
+
+        while queue:
+            current, serial = queue.pop(0)
+            stack.append((current, serial))
+
+            if current.right:
+                serial -= 1
+                queue.append((current.right, serial))
+            if current.left:
+                serial -= 1
+                queue.append((current.left, serial))
+
+        while stack:
+            traversal.append(stack.pop())
+
+        return dict(traversal)
 
     def map_linked_nodes_to_ids(self):
         enumerated_nodes = self.enumerated_nodes()
@@ -125,4 +176,12 @@ class DashTree:
 
 
 if __name__ == '__main__':
-    print(DashTree('(a|b)#').vertices())
+    tree = DashTree('aaaaa#')
+
+    print(tree.vertices())
+    print(tree.linked_nodes())
+    print(tree.enumerated_nodes())
+    print(tree.map_linked_nodes_to_ids())
+
+    for k, value in tree.retrieve_serials_by_creation_order().items():
+        print(k, value)
