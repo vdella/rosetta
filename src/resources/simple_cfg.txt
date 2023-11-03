@@ -1,9 +1,0 @@
-#start
-S
-#non-terminals
-S
-#terminals
-a
-b
-#productions
-S -> aSa | bSb | aa | bb
