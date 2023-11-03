@@ -91,16 +91,18 @@ def create_figure_from(user_text_entry):
     Input('bin-tree', 'figure')
 )
 def update_figure(active_page, bin_tree_figure):
+    bin_tree_figure = Figure(bin_tree_figure)  # Has to load its data; comes as a dict from the main page.
+
     if active_page:
-
-        bin_tree_figure = Figure(bin_tree_figure)  # Has to load its data; comes as a dict from the main page.
-
         page_note = page.pagination_notes()[active_page - 1].values()
 
         opacity = page.opacities()[active_page - 1].values()
 
         bin_tree_figure.update_traces(hovertemplate=list(page_note))
         bin_tree_figure.update_traces(marker=dict(opacity=list(opacity)))
+
+    else:
+        bin_tree_figure.update_traces(hoverinfo='none')
 
     return bin_tree_figure
 
