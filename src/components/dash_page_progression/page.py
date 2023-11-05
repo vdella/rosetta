@@ -1,6 +1,6 @@
 from src.components.dash_page_progression.tree import DashTree
 from src.components.dash_page_progression.node import DashNode
-from src.components.dash_page_progression.figure import figure_from
+from src.components.dash_page_progression.figure import figure_from, copy
 
 
 class DashPage:
@@ -8,6 +8,19 @@ class DashPage:
     def __init__(self, regex):
         self.finalized_tree = DashTree(regex)
         self.final_figure = figure_from(self.finalized_tree.regex)
+
+    def follow_pos_figure(self):
+        follow_pos_figure = copy(self.final_figure)
+
+        follow_pos_figure.update_layout(
+            title={
+                'text': 'FollowPosTree',
+                'xanchor': 'center',  # Without it, the title is created to the left.
+            }
+        )
+        follow_pos_figure.update_traces(marker=dict(opacity=1.0))
+
+        return follow_pos_figure
 
     def pagination_notes(self):
         pagination_notes = [self.finalized_tree.nodes.copy() for _ in range(self.page_quantity())]

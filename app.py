@@ -64,29 +64,58 @@ app.layout = html.Div(
         ),
 
         html.Br(),
+        html.Br(),
+
+        html.Div(
+            id='follow-pos-figure-parent',
+            children=[
+                dcc.Graph(
+                    id='follow-pos-figure',
+                    figure={},
+                ),
+            ],
+            hidden=True,
+        )
     ]))
 
 
 @callback(
     Output('figure-parent', 'hidden'),
     Output('tree-page-handler', 'hidden'),
+    Output('follow-pos-figure-parent', 'hidden'),
+
     Output('pagination', 'max_value'),
     Output('bin-tree', 'figure', allow_duplicate=True),
+    Output('follow-pos-figure', 'figure'),
+
     Input('regex-input', 'value'),
     prevent_initial_call=True)
 def create_figure_from(user_text_entry):
-    hidden_figure, hidden_page_handler = True, True
+    hidden_figure, hidden_page_handler, hidden_follow_pos_figure = True, True, True
 
     if user_text_entry:
         global page
         page = DashPage(user_text_entry)
 
-        return not hidden_figure, not hidden_page_handler, page.page_quantity(), page.final_figure
-    return hidden_figure, hidden_page_handler, 0, {}
+        return (not hidden_figure,
+                not hidden_page_handler,
+                not hidden_follow_pos_figure,
+
+                page.page_quantity(),
+                page.final_figure,
+                page.follow_pos_figure())
+    return (hidden_figure,
+            hidden_page_handler,
+            hidden_follow_pos_figure,
+
+            0,
+            {},
+            {})
 
 
 @callback(
     Output('bin-tree', 'figure'),
+
     Input('pagination', 'active_page'),
     Input('bin-tree', 'figure')
 )
