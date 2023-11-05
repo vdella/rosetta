@@ -20,7 +20,7 @@ def figure_from(regex):
     dash_nodes = tree.nodes
     __node_trace_for(fig, Xn, Yn, dash_nodes)
 
-    fig.update_layout(title_text='Lexical analysis tree',
+    fig.update_layout(title_text='FirstLastTree',
                       title_x=0.5,
                       font_size=12,
                       showlegend=False,
