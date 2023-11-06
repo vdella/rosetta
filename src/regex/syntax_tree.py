@@ -143,14 +143,6 @@ def stringfy(node):
     return str(first_pos), str(last_pos)
 
 
-def show_tree_from(root, level=0):
-    if root:
-        show_tree_from(root.right, level + 1)
-        print(' ' * 4 * level + '-> ' + str(root))
-        show_tree_from(root.left, level + 1)
-
-
 if __name__ == '__main__':
-    a = '(&|b)(ab)*(&|a)'
+    a = '(a|b)∗abb'
     t = SyntaxTree(a)
-    show_tree_from(t.root)
