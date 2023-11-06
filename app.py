@@ -1,4 +1,4 @@
-from dash import Dash, html, dcc, Input, Output, callback
+from dash import Dash, html, dcc, Input, Output, callback, dash
 from src.components.dash_page_progression.page import DashPage
 import dash_bootstrap_components as dbc
 from plotly.graph_objects import Figure
@@ -67,13 +67,15 @@ app.layout = html.Div(
         html.Br(),
 
         html.Div(
-            id='follow-pos-figure-parent',
+            id='follow-pos-table-parent',
             children=[
-                dcc.Graph(
-                    id='follow-pos-figure',
-                    figure={},
-                ),
+                dash.dash_table.DataTable(
+                        id='follow-pos-table',
+                        columns=[{'name': i, 'id': i} for i in ['Node n', 'follow_pos(n)']],
+                        data=[],
+                    ),
             ],
+            style={'display': 'flex', 'justifyContent': 'center'},
             hidden=True,
         )
     ]))
@@ -82,11 +84,11 @@ app.layout = html.Div(
 @callback(
     Output('figure-parent', 'hidden'),
     Output('tree-page-handler', 'hidden'),
-    Output('follow-pos-figure-parent', 'hidden'),
+    Output('follow-pos-table-parent', 'hidden'),
 
     Output('pagination', 'max_value'),
     Output('bin-tree', 'figure', allow_duplicate=True),
-    Output('follow-pos-figure', 'figure'),
+    Output('follow-pos-table', 'data'),
 
     Input('regex-input', 'value'),
     prevent_initial_call=True)
@@ -103,14 +105,14 @@ def create_figure_from(user_text_entry):
 
                 page.page_quantity(),
                 page.final_figure,
-                page.follow_pos_figure())
+                [])
     return (hidden_figure,
             hidden_page_handler,
             hidden_follow_pos_figure,
 
             0,
             {},
-            {})
+            [])
 
 
 @callback(
