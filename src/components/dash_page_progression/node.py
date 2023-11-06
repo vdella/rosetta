@@ -12,6 +12,7 @@ class DashNode:
             self.first_pos, self.last_pos = stringfy(node)
 
             self.reverse_level_creation_id = 0
+            self.breadth_first_search_id = 0
 
     def __str__(self):
         return (f"nullable: {self.nullable}<br />"
