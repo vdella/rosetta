@@ -42,11 +42,6 @@ class FiniteAutomata:
                 return True
         return False
 
-    def gen_st(self, identifier: str) -> int:
-        if identifier not in self.symbol_table:
-            self.symbol_table.append(identifier)
-        return self.symbol_table.index(identifier)
-
     def __or__(self, other):
         new_fa = FiniteAutomata()
 
