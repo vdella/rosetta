@@ -1,5 +1,6 @@
 from dash import Dash, html, dcc, Input, Output, callback, dash
 from src.components.dash_page_progression.page import DashPage
+from src.components.dash_follow_pos_table.table import follow_pos_data_from
 import dash_bootstrap_components as dbc
 from plotly.graph_objects import Figure
 
@@ -105,7 +106,7 @@ def create_figure_from(user_text_entry):
 
                 page.page_quantity(),
                 page.final_figure,
-                [])
+                follow_pos_data_from(page.finalized_tree))
     return (hidden_figure,
             hidden_page_handler,
             hidden_follow_pos_figure,
