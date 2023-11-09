@@ -14,7 +14,7 @@ class State:
         return hash(self.label)
 
     def __eq__(self, other):
-        return self.label == other.label
+        return hash(self.label) == hash(other.label)
 
 
 if __name__ == '__main__':
