@@ -8,7 +8,7 @@ class State:
         self.label = label
 
     def __str__(self):
-        return self.label if self.label is not None else 'q{}'.format(self.id)
+        return self.label if self.label is not None else '{}'.format(self.id)
 
     def __hash__(self):
         return hash(self.label)
