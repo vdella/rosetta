@@ -9,7 +9,6 @@ class FiniteAutomata:
         self.states = {self.initial_state}
         self.transitions = dict()
         self.final_states = set()
-        self.symbol_table = list()
 
     def read(self, sentence: str) -> bool:
         """Iteratively loops over a transition table and
