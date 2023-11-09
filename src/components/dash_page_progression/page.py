@@ -33,6 +33,16 @@ class DashPage:
 
         return opacities
 
+    def colors(self):
+        colors = self.pagination_notes().copy()
+
+        for active_page, page_note in enumerate(self.pagination_notes()):
+            for index, note in enumerate(page_note.values()):
+
+                colors[active_page][index] = 'rgb(255, 255, 255)' if note else 'rgb(119, 52, 235)'
+
+        return colors
+
     @staticmethod
     def empty_dash_page():
         return DashPage('a#')
@@ -44,4 +54,7 @@ class DashPage:
 
 if __name__ == '__main__':
     for page in DashPage('aaa#').opacities():
+        print(page)
+
+    for page in DashPage('aaa#').colors():
         print(page)

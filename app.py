@@ -9,7 +9,7 @@ from plotly.graph_objects import Figure
 
 page = DashPage.empty_dash_page()
 
-external_stylesheets = [dbc.themes.JOURNAL]
+external_stylesheets = [dbc.themes.PULSE]
 app = Dash(__name__, external_stylesheets=external_stylesheets)
 
 app.layout = html.Div(
@@ -104,8 +104,12 @@ app.layout = html.Div(
             style={'display': 'flex', 'justifyContent': 'center'},
             hidden=True,
         ),
+
+        html.Br(),
+        html.Br(),
     ])
 )
+
 
 @callback(
     Output('figure-parent', 'hidden'),
@@ -167,9 +171,11 @@ def update_figure(active_page, bin_tree_figure):
 
         opacity = page.opacities()[active_page - 1].values()
 
+        colors = page.colors()[active_page - 1].values()
+
         bin_tree_figure.update_traces(hovertemplate=list(page_note))
         bin_tree_figure.update_traces(marker=dict(opacity=list(opacity)))
-
+        bin_tree_figure.update_traces(textfont=dict(color=list(colors)))
     else:
         bin_tree_figure.update_traces(hoverinfo='none')
 
