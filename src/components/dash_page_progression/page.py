@@ -53,8 +53,5 @@ class DashPage:
 
 
 if __name__ == '__main__':
-    for page in DashPage('aaa#').opacities():
-        print(page)
-
-    for page in DashPage('aaa#').colors():
+    for page in DashPage('bbb#').pagination_notes():
         print(page)

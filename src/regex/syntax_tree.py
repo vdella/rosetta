@@ -132,7 +132,7 @@ class Node:
 
 
 def stringfy(node):
-    """:returns the first_pos() and last_pos() of a :param node: as strings
+    """returns the first_pos() and last_pos() of a node as strings
     in order to print them in Node.__str__()."""
     first_pos = [n.serial_number for n in node.first_pos()]
     first_pos.sort()
@@ -146,3 +146,4 @@ def stringfy(node):
 if __name__ == '__main__':
     a = '(a|b)∗abb'
     t = SyntaxTree(a)
+    

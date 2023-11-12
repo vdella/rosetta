@@ -80,4 +80,3 @@ def sides_for(operator, regex):
 
 def __trim_blank_spaces(regex: str) -> str:
     return regex.replace(' ', '')
-

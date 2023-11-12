@@ -13,34 +13,37 @@ def graph_from(tree: DashTree):
     def build_graph_from(node):
         nonlocal graph, nodes, vertices
 
-        current_regex_symbol = str(node.breadth_first_search_id)
+        current = str(node.breadth_first_search_id)
 
-        if current_regex_symbol not in vertices:
-            graph.add_vertex(current_regex_symbol)
-            vertices |= {current_regex_symbol}
+        if current not in vertices:
+            graph.add_vertex(current)
+            vertices |= {current}
 
         left_children: DashNode
         right_children: DashNode
         left_children, right_children = nodes[node]
 
         if left_children:
-            left_regex_symbol = str(left_children.breadth_first_search_id)
+            left = str(left_children.breadth_first_search_id)
 
-            graph.add_vertex(left_regex_symbol)
-            graph.add_edge(current_regex_symbol, left_regex_symbol)
+            graph.add_vertex(left)
+            graph.add_edge(current, left)
             build_graph_from(left_children)
 
         if right_children:
-            right_regex_symbol = str(right_children.breadth_first_search_id)
+            right = str(right_children.breadth_first_search_id)
 
-            graph.add_vertex(right_regex_symbol)
-            graph.add_edge(current_regex_symbol, right_regex_symbol)
+            graph.add_vertex(right)
+            graph.add_edge(current, right)
             build_graph_from(right_children)
 
     build_graph_from(root)
 
-    to_delete_ids = [v.index for v in graph.vs if v.degree() == 0]  # Gathers all vertices without edges and...
-    graph.delete_vertices(to_delete_ids)  # Removes them from the graph.
+    # Gathers all vertices without edges and...
+    to_delete_ids = [v.index for v in graph.vs if v.degree() == 0]
+
+    # Removes them from the graph.
+    graph.delete_vertices(to_delete_ids)
 
     return graph
 
