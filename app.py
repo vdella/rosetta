@@ -12,6 +12,8 @@ page = DashPage.empty_dash_page()
 external_stylesheets = [dbc.themes.PULSE]
 app = Dash(__name__, external_stylesheets=external_stylesheets)
 
+server = app.server
+
 app.layout = html.Div(
     html.Div([
         html.Br(),
