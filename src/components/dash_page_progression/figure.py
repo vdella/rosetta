@@ -1,7 +1,5 @@
 import plotly.graph_objects as go
 from igraph import Layout, Graph
-from plotly.graph_objs import Figure
-
 from src.components.dash_page_progression.tree import DashTree
 from src.components.dash_page_progression.node import DashNode
 from src.components.dash_page_progression.graph import graph_from
@@ -31,12 +29,6 @@ def figure_from(regex):
                       plot_bgcolor='rgb(255,255,255)'
                       )
     return fig
-
-
-def copy(figure: Figure):
-    figure_as_dict = figure.to_dict().copy()
-
-    return Figure(figure_as_dict)
 
 
 def __build_node_coordinates_for(tree: DashTree):
