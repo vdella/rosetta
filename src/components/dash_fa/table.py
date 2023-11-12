@@ -1,4 +1,3 @@
-from src.automata.fa import FiniteAutomata
 from src.components.dash_page_progression.tree import DashTree
 from src.regex.conversion import fa_from
 
