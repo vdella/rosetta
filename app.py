@@ -29,7 +29,7 @@ app.layout = html.Div(
             children=[
                 dcc.Input(
                     id='regex-input',
-                    placeholder='Type your favorite regex!',
+                    placeholder='Type your favorite regex! (e.g. (a|b)*abb#)',
                     debounce=True),
             ],
             style={'textAlign': 'center'},
@@ -79,7 +79,9 @@ app.layout = html.Div(
             children=[
                 dash.dash_table.DataTable(
                         id='follow-pos-table',
-                        columns=[{'name': i, 'id': i} for i in ['Node n', 'follow_pos(n)']],
+                        columns=[
+                            {'name': i, 'id': i}
+                            for i in ['Node n', 'follow_pos(n)']],
                         data=[],
                     ),
             ],
@@ -95,7 +97,9 @@ app.layout = html.Div(
             children=[
                 dash.dash_table.DataTable(
                     id='fa-table',
-                    columns=[{'name': i, 'id': i} for i in ['(source_state, symbol)', 'destiny_state']],
+                    columns=[
+                        {'name': i, 'id': i}
+                        for i in ['(source_state, symbol)', 'destiny_state']],
                     data=[],
                 ),
 
@@ -130,7 +134,10 @@ app.layout = html.Div(
     Input('regex-input', 'value'),
     prevent_initial_call=True)
 def create_figure_from(user_text_entry):
-    hidden_figure, hidden_page_handler, hidden_follow_pos, hidden_fa_table = True, True, True, True
+    (hidden_figure,
+     hidden_page_handler,
+     hidden_follow_pos,
+     hidden_fa_table) = True, True, True, True
 
     if user_text_entry:
         global page
