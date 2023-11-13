@@ -1,5 +1,6 @@
 from dash import Dash, html, dcc, Input, Output, callback, dash
-
+import os
+import shutil
 from src.components.dash_fa.figure import fa_state_diagram_from
 from src.components.dash_fa.table import fa_table_data_from
 from src.components.dash_page_progression.page import DashPage
@@ -29,8 +30,9 @@ app.layout = html.Div(
             children=[
                 dcc.Input(
                     id='regex-input',
-                    placeholder='Type your favorite regex! (e.g. (a|b)*abb#)',
-                    debounce=True),
+                    placeholder='Type your regex! (e.g. (a|b)*abb#)',
+                    debounce=True,
+                    readOnly=False),
             ],
             style={'textAlign': 'center'},
         ),
@@ -131,6 +133,8 @@ app.layout = html.Div(
     Output('fa-table', 'data'),
     Output('fa-img', 'src'),
 
+    Output('regex-input', 'readOnly'),
+
     Input('regex-input', 'value'),
     prevent_initial_call=True)
 def create_figure_from(user_text_entry):
@@ -139,11 +143,17 @@ def create_figure_from(user_text_entry):
      hidden_follow_pos,
      hidden_fa_table) = True, True, True, True
 
+    read_only_text_input = True
+
     if user_text_entry:
         global page
         page = DashPage(user_text_entry)
 
         fa_diagram = fa_state_diagram_from(page.finalized_tree)
+
+        if os.path.exists('assets/finite-automata.gv.png'):
+            os.remove('assets/finite-automata.gv.png')
+
         fa_diagram.render()
 
         return (not hidden_figure,
@@ -155,7 +165,9 @@ def create_figure_from(user_text_entry):
                 page.final_figure,
                 follow_pos_data_from(page.finalized_tree),
                 fa_table_data_from(page.finalized_tree),
-                app.get_asset_url('finite-automata.gv.png'))
+                app.get_asset_url('finite-automata.gv.png'),
+
+                read_only_text_input)
     return (hidden_figure,
             hidden_page_handler,
             hidden_follow_pos,
@@ -165,7 +177,9 @@ def create_figure_from(user_text_entry):
             {},
             [],
             [],
-            '')
+            '',
+
+            not read_only_text_input)
 
 
 @callback(
