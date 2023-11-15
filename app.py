@@ -1,6 +1,5 @@
 from dash import Dash, html, dcc, Input, Output, callback, dash
 import os
-import shutil
 from src.components.dash_fa.figure import fa_state_diagram_from
 from src.components.dash_fa.table import fa_table_data_from
 from src.components.dash_page_progression.page import DashPage
@@ -32,7 +31,7 @@ app.layout = html.Div(
                     id='regex-input',
                     placeholder='Type your regex! (e.g. (a|b)*abb#)',
                     debounce=True,
-                    readOnly=False),
+                ),
             ],
             style={'textAlign': 'center'},
         ),
@@ -108,7 +107,7 @@ app.layout = html.Div(
                 html.Img(
                     id='fa-img',
                     src='',
-                    style={"margin-left": "100px"}
+                    style={'margin-left': '100px', 'height':'10%', 'width':'10%'},
                 )
             ],
             style={'display': 'flex', 'justifyContent': 'center'},
@@ -133,8 +132,6 @@ app.layout = html.Div(
     Output('fa-table', 'data'),
     Output('fa-img', 'src'),
 
-    Output('regex-input', 'readOnly'),
-
     Input('regex-input', 'value'),
     prevent_initial_call=True)
 def create_figure_from(user_text_entry):
@@ -143,17 +140,14 @@ def create_figure_from(user_text_entry):
      hidden_follow_pos,
      hidden_fa_table) = True, True, True, True
 
-    read_only_text_input = True
+    if os.path.exists(app.get_asset_url('finite-automata.gv.png')):
+        os.remove(app.get_asset_url('finite-automata.gv.png'))
 
     if user_text_entry:
         global page
         page = DashPage(user_text_entry)
 
         fa_diagram = fa_state_diagram_from(page.finalized_tree)
-
-        if os.path.exists('assets/finite-automata.gv.png'):
-            os.remove('assets/finite-automata.gv.png')
-
         fa_diagram.render()
 
         return (not hidden_figure,
@@ -165,9 +159,7 @@ def create_figure_from(user_text_entry):
                 page.final_figure,
                 follow_pos_data_from(page.finalized_tree),
                 fa_table_data_from(page.finalized_tree),
-                app.get_asset_url('finite-automata.gv.png'),
-
-                read_only_text_input)
+                app.get_asset_url('finite-automata.gv.png'))
     return (hidden_figure,
             hidden_page_handler,
             hidden_follow_pos,
@@ -177,9 +169,7 @@ def create_figure_from(user_text_entry):
             {},
             [],
             [],
-            '',
-
-            not read_only_text_input)
+            '')
 
 
 @callback(
@@ -192,11 +182,11 @@ def update_figure(active_page, bin_tree_figure):
     bin_tree_figure = Figure(bin_tree_figure)  # Has to load its data; comes as a dict from the main page.
 
     if active_page:
-        page_note = page.pagination_notes()[active_page - 1].values()
+        page_note = page.pagination_notes[active_page - 1].values()
 
-        opacity = page.opacities()[active_page - 1].values()
+        opacity = page.opacities[active_page - 1].values()
 
-        colors = page.colors()[active_page - 1].values()
+        colors = page.colors[active_page - 1].values()
 
         bin_tree_figure.update_traces(hovertemplate=list(page_note))
         bin_tree_figure.update_traces(marker=dict(opacity=list(opacity)))
@@ -208,4 +198,4 @@ def update_figure(active_page, bin_tree_figure):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, dev_tools_hot_reload=False)
