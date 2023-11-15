@@ -102,24 +102,27 @@ class DashTree:
 
         syntax_tree = self.syntax_tree
 
-        serial = len(self.vertices())
-        queue = [(syntax_tree.root, serial)]
+        queue = [syntax_tree.root]
         stack = []
         traversal = []
 
+        # Traverse the tree and store nodes in stack
         while queue:
-            current, serial = queue.pop(0)
-            stack.append((current, serial))
+            current = queue.pop(0)
+            stack.append(current)
 
-            if current.right:
-                serial -= 1
-                queue.append((current.right, serial))
+            # Add children to the queue
             if current.left:
-                serial -= 1
-                queue.append((current.left, serial))
+                queue.append(current.left)
+            if current.right:
+                queue.append(current.right)
 
+        # Assign serial numbers in reverse order
+        serial = 1
         while stack:
-            traversal.append(stack.pop())
+            current = stack.pop()
+            traversal.append((current, serial))
+            serial += 1
 
         return dict(traversal)
 
@@ -160,7 +163,9 @@ class DashTree:
 
 
 if __name__ == '__main__':
-    tree = DashTree('aaa#')
+    tree = DashTree('(0|1)*1(0|1)(0|1)(0|1)(0|1)(0|1)#')
 
-    for k, v in tree.nodes.items():
+    print(len(tree.vertices()))
+
+    for k, v in tree.nodes_by_reverse_level_order_traversal().items():
         print(k, v)
