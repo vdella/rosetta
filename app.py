@@ -1,5 +1,5 @@
+import base64
 from dash import Dash, html, dcc, Input, Output, callback, dash
-import os
 from src.components.dash_fa.figure import fa_state_diagram_from
 from src.components.dash_fa.table import fa_table_data_from
 from src.components.dash_page_progression.page import DashPage
@@ -140,15 +140,12 @@ def create_figure_from(user_text_entry):
      hidden_follow_pos,
      hidden_fa_table) = True, True, True, True
 
-    if os.path.exists(app.get_asset_url('finite-automata.gv.png')):
-        os.remove(app.get_asset_url('finite-automata.gv.png'))
-
     if user_text_entry:
         global page
         page = DashPage(user_text_entry)
 
         fa_diagram = fa_state_diagram_from(page.finalized_tree)
-        fa_diagram.render()
+        fa_diagram.render(cleanup=True, overwrite_source=True, format='png')
 
         return (not hidden_figure,
                 not hidden_page_handler,
@@ -159,7 +156,7 @@ def create_figure_from(user_text_entry):
                 page.final_figure,
                 follow_pos_data_from(page.finalized_tree),
                 fa_table_data_from(page.finalized_tree),
-                app.get_asset_url('finite-automata.gv.png'))
+                b64_image('finite-automata.gv.png'))
     return (hidden_figure,
             hidden_page_handler,
             hidden_follow_pos,
@@ -195,6 +192,12 @@ def update_figure(active_page, bin_tree_figure):
         bin_tree_figure.update_traces(hoverinfo='none')
 
     return bin_tree_figure
+
+
+def b64_image(image_filename):
+    with open(image_filename, 'rb') as f:
+        image = f.read()
+    return 'data:image/png;base64,' + base64.b64encode(image).decode('utf-8')
 
 
 if __name__ == '__main__':

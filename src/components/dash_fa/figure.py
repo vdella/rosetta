@@ -8,9 +8,7 @@ def fa_state_diagram_from(tree: DashTree):
     fa: FiniteAutomata = fa_from(tree.regex)
 
     graph = graphviz.Digraph('finite-automata',
-                             comment='Finite Automata',
-                             format='png',
-                             directory='assets')
+                             comment='Finite Automata',)
 
     useless_states = {state for state in fa.states if state not in fa.transitions.keys()}
     common_states = fa.states - fa.final_states - {fa.initial_state} - useless_states
