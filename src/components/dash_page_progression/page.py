@@ -9,6 +9,7 @@ class DashPage:
         self.finalized_tree = DashTree(regex)
         self.final_figure = figure_from(self.finalized_tree.regex)
 
+    @property
     def pagination_notes(self):
         pagination_notes = [self.finalized_tree.nodes.copy() for _ in range(self.page_quantity())]
 
@@ -23,20 +24,22 @@ class DashPage:
 
         return pagination_notes
 
+    @property
     def opacities(self):
-        opacities = self.pagination_notes().copy()
+        opacities = self.pagination_notes.copy()
 
-        for active_page, page_note in enumerate(self.pagination_notes()):
+        for active_page, page_note in enumerate(self.pagination_notes):
             for index, note in enumerate(page_note.values()):
 
                 opacities[active_page][index] = 1 if note else 0.4
 
         return opacities
 
+    @property
     def colors(self):
-        colors = self.pagination_notes().copy()
+        colors = self.pagination_notes.copy()
 
-        for active_page, page_note in enumerate(self.pagination_notes()):
+        for active_page, page_note in enumerate(self.pagination_notes):
             for index, note in enumerate(page_note.values()):
 
                 colors[active_page][index] = 'rgb(255, 255, 255)' if note else 'rgb(119, 52, 235)'
