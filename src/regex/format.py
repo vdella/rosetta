@@ -11,10 +11,10 @@ def eat(regex) -> list and set:
         # If a regex is 1 char long, that regex is already digested.
         return [regex], {regex}
 
-    if regex[-1] == '#':  # No need to add # if the regex already has it.
-        digest = __trim_blank_spaces(regex)
-    else:
-        digest = __trim_blank_spaces(regex) + '#'
+    regex = ['('] + list(regex) + [')'] + (['#'] if regex[-1] != '#' else [])
+    regex = ''.join(regex)
+
+    digest = regex.replace(' ', '')
 
     digest = __add_missing_concatenations(digest)
     return list(digest), __terminals_from(digest) | {'&'}
@@ -26,24 +26,6 @@ def __add_missing_concatenations(regex):
 
     # As we added '.' between every string, we need to trim the wrong additions.
     return concatenated.replace('(.', '(').replace('.)', ')').replace('.|.', '|').replace('.*', '*').replace('.?', '?')
-
-
-def __non_terminal_surrounded(regex: str, place) -> bool:
-    """Checks if a character is surrounded by non-terminals by any of its sides."""
-    before = regex[place - 1]
-
-    if place == len(regex) - 1:  # Checks if 'place' is at the regex' final position.
-        return False
-
-    after = regex[place + 1]
-
-    return before in non_terminals and after in non_terminals
-
-
-def __left_parenthesis_surrounded(regex: str, place) -> bool:
-    """As the missing concatenations will be added by the left of a symbol,
-    we have to avoid adding concatenations at its left if there is a '('."""
-    return regex[place - 1] == '(' and regex[place] in __terminals_from(regex)
 
 
 def __terminals_from(regex) -> set:
@@ -78,5 +60,6 @@ def sides_for(operator, regex):
     return left_tree, right_tree[::-1]
 
 
-def __trim_blank_spaces(regex: str) -> str:
-    return regex.replace(' ', '')
+if __name__ == '__main__':
+    print(eat('a b c'))
+    print(eat('a|b|c'))
