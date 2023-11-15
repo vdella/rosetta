@@ -131,5 +131,4 @@ dmypy.json
 # PyCharm's IDEA folder
 .idea
 
-src/resources/generated*
-assets/finite-automata.gv*
+images/
