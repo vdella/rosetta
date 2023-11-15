@@ -145,7 +145,10 @@ def create_figure_from(user_text_entry):
         page = DashPage(user_text_entry)
 
         fa_diagram = fa_state_diagram_from(page.finalized_tree)
-        fa_diagram.render(cleanup=True, overwrite_source=True, format='png')
+        fa_diagram.render(cleanup=True,
+                          overwrite_source=True,
+                          directory='images/',
+                          format='png')
 
         return (not hidden_figure,
                 not hidden_page_handler,
@@ -156,7 +159,7 @@ def create_figure_from(user_text_entry):
                 page.final_figure,
                 follow_pos_data_from(page.finalized_tree),
                 fa_table_data_from(page.finalized_tree),
-                b64_image('finite-automata.gv.png'))
+                b64_image('images/finite-automata.gv.png'))
     return (hidden_figure,
             hidden_page_handler,
             hidden_follow_pos,
