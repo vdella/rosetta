@@ -75,9 +75,7 @@ app.layout = html.Div(
             children=[
                 dbc.Pagination(
                     id='pagination',
-                    min_value=0,
                     max_value=0,
-                    active_page=0,
                     first_last=True,
                     previous_next=True,
                     fully_expanded=False),
@@ -220,11 +218,11 @@ def update_figure(active_page, bin_tree_figure):
     bin_tree_figure = Figure(bin_tree_figure)  # Has to load its data; comes as a dict from the main page.
 
     if active_page:
-        page_note = page.pagination_notes[active_page].values()
+        page_note = page.pagination_notes[active_page - 1].values()
 
-        opacity = page.opacities[active_page].values()
+        opacity = page.opacities[active_page - 1].values()
 
-        colors = page.colors[active_page].values()
+        colors = page.colors[active_page - 1].values()
 
         bin_tree_figure.update_traces(hovertemplate=list(page_note))
         bin_tree_figure.update_traces(marker=dict(opacity=list(opacity)))
