@@ -50,10 +50,6 @@ def _tree_from(regex):
     if left:
         return Node('*', _tree_from(left))
 
-    left, _ = sides_for('?', regex)
-    if left:
-        return Node('|', _tree_from(left), Node('&'))
-
     if regex[0] == '(' and regex[-1] == ')':
         return _tree_from(regex[1:-1])
 

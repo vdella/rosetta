@@ -1,4 +1,4 @@
-operators = {'*', '.', '|', '+', '?'}
+operators = {'|', '.', '*'}
 parenthesis = {'(', ')'}
 non_terminals = operators | parenthesis
 
@@ -15,6 +15,7 @@ def eat(regex) -> list and set:
     regex = ''.join(regex)
 
     digest = regex.replace(' ', '')
+    digest = __replace_for_pipes_for(digest)
 
     digest = __add_missing_concatenations(digest)
     return list(digest), __terminals_from(digest) | {'&'}
@@ -36,6 +37,10 @@ def __terminals_from(regex) -> set:
         if symbol not in operators and symbol not in parenthesis:
             terminals.add(symbol)
     return terminals
+
+
+def __replace_for_pipes_for(regex):
+    return regex.replace('+', '|')
 
 
 def sides_for(operator, regex):

@@ -6,6 +6,7 @@ from src.components.dash_page_progression.page import DashPage
 from src.components.dash_follow_pos_table.table import follow_pos_data_from
 import dash_bootstrap_components as dbc
 from plotly.graph_objects import Figure
+from src.regex.sanitization import is_correct
 
 page = DashPage.empty_dash_page()
 
@@ -36,6 +37,17 @@ app.layout = html.Div(
             style={'textAlign': 'center'},
         ),
 
+        dbc.Modal(
+            id="modal-regex-sanitization",
+            children=[
+                dbc.ModalHeader(dbc.ModalTitle("Regex sanitization problem")),
+                dbc.ModalBody("Your regex may be lacking the correct number"
+                              "of parenthesis, using the '?' operator"
+                              "or using the '|', '.' and '*' operators incorrectly.")
+            ],
+            is_open=False,
+        ),
+
         html.Br(),
 
         html.Div(
@@ -63,7 +75,9 @@ app.layout = html.Div(
             children=[
                 dbc.Pagination(
                     id='pagination',
+                    min_value=0,
                     max_value=0,
+                    active_page=0,
                     first_last=True,
                     previous_next=True,
                     fully_expanded=False),
@@ -132,6 +146,8 @@ app.layout = html.Div(
     Output('fa-table', 'data'),
     Output('fa-img', 'src'),
 
+    Output('modal-regex-sanitization', 'is_open'),
+
     Input('regex-input', 'value'),
     prevent_initial_call=True)
 def create_figure_from(user_text_entry):
@@ -140,26 +156,46 @@ def create_figure_from(user_text_entry):
      hidden_follow_pos,
      hidden_fa_table) = True, True, True, True
 
+    open_modal = True
+
     if user_text_entry:
-        global page
-        page = DashPage(user_text_entry)
 
-        fa_diagram = fa_state_diagram_from(page.finalized_tree)
-        fa_diagram.render(cleanup=True,
-                          overwrite_source=True,
-                          directory='images/',
-                          format='png')
+        if is_correct(regex=user_text_entry):
 
-        return (not hidden_figure,
-                not hidden_page_handler,
-                not hidden_follow_pos,
-                not hidden_fa_table,
+            global page
+            page = DashPage(user_text_entry)
 
-                page.page_quantity(),
-                page.final_figure,
-                follow_pos_data_from(page.finalized_tree),
-                fa_table_data_from(page.finalized_tree),
-                b64_image('images/finite-automata.gv.png'))
+            fa_diagram = fa_state_diagram_from(page.finalized_tree)
+            fa_diagram.render(cleanup=True,
+                              overwrite_source=True,
+                              directory='images/',
+                              format='png')
+
+            return (not hidden_figure,
+                    not hidden_page_handler,
+                    not hidden_follow_pos,
+                    not hidden_fa_table,
+
+                    page.page_quantity(),
+                    page.final_figure,
+                    follow_pos_data_from(page.finalized_tree),
+                    fa_table_data_from(page.finalized_tree),
+                    b64_image('images/finite-automata.gv.png'),
+
+                    not open_modal)
+        else:
+            return (hidden_figure,
+                    hidden_page_handler,
+                    hidden_follow_pos,
+                    hidden_fa_table,
+
+                    0,
+                    {},
+                    [],
+                    [],
+                    '',
+
+                    open_modal)
     return (hidden_figure,
             hidden_page_handler,
             hidden_follow_pos,
@@ -169,7 +205,9 @@ def create_figure_from(user_text_entry):
             {},
             [],
             [],
-            '')
+            '',
+
+            not open_modal)
 
 
 @callback(
@@ -182,11 +220,11 @@ def update_figure(active_page, bin_tree_figure):
     bin_tree_figure = Figure(bin_tree_figure)  # Has to load its data; comes as a dict from the main page.
 
     if active_page:
-        page_note = page.pagination_notes[active_page - 1].values()
+        page_note = page.pagination_notes[active_page].values()
 
-        opacity = page.opacities[active_page - 1].values()
+        opacity = page.opacities[active_page].values()
 
-        colors = page.colors[active_page - 1].values()
+        colors = page.colors[active_page].values()
 
         bin_tree_figure.update_traces(hovertemplate=list(page_note))
         bin_tree_figure.update_traces(marker=dict(opacity=list(opacity)))
