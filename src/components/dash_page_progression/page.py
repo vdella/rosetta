@@ -56,5 +56,5 @@ class DashPage:
 
 
 if __name__ == '__main__':
-    for page in DashPage('bbb#').pagination_notes():
+    for page in DashPage('bbb#').pagination_notes:
         print(page)

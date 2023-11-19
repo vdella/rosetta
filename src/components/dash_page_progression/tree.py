@@ -112,10 +112,10 @@ class DashTree:
             stack.append(current)
 
             # Add children to the queue
-            if current.left:
-                queue.append(current.left)
             if current.right:
                 queue.append(current.right)
+            if current.left:
+                queue.append(current.left)
 
         # Assign serial numbers in reverse order
         serial = 1
